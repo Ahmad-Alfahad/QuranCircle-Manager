@@ -46,4 +46,31 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isTeacher(): bool
+    {
+        return $this->role === 'teacher';
+    }
+
+    public function isStudent(): bool
+    {
+        return $this->role === 'student';
+    }
+
+    public function circles()
+    {
+        return $this->belongsToMany(Circle::class, 'circle_student', 'student_id', 'circle_id')
+                    ->withPivot('status', 'joined_at')
+                    ->withTimestamps();
+    }
+
+    public function circleStudents()
+    {
+        return $this->hasMany(CircleStudent::class, 'student_id');
+    }
 }
