@@ -16,4 +16,5 @@ class Surah extends Model
     {
         return $this->hasMany(Exam::class);
     }
+    
 }

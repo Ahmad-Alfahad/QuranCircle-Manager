@@ -38,4 +38,6 @@ class CircleStudent extends Model
     {
         return $this->hasMany(Attendance::class, 'circle_student_id');
     }
+
+    
 }
