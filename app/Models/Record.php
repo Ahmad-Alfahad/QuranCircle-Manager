@@ -15,7 +15,7 @@ class Record extends Model
         'method',
         'from',
         'to',
-        'date',
+        'recorded_at',
         'grade',
         'notes'
     ];
