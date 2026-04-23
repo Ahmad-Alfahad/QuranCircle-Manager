@@ -73,4 +73,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(CircleStudent::class, 'student_id');
     }
+
+    public function teacherCircle()
+    {
+        return $this->hasMany(Circle::class , 'teacher_id');
+    }
 }

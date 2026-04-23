@@ -7,12 +7,24 @@ use Illuminate\Database\Eloquent\Model;
 class Record extends Model
 {
     //
+
+    protected $fillable = [
+        'circle_student_id',
+        'surah_id',
+        'type',
+        'method',
+        'from',
+        'to',
+        'date',
+        'grade',
+        'notes'
+    ];
     public function surah()
     {
         return $this->belongsTo(Surah::class);
     }
 
-    public function CircleStudent()
+    public function circleStudent()
     {
         return $this->belongsTo(CircleStudent::class);
     }

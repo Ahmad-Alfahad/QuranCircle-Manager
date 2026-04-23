@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class Surah extends Model
 {
     //
-    public function record ()
+    public function records()
     {
         return $this->hasMany(Record::class);
     }
 
-    public function exam()
+    public function exams()
     {
         return $this->hasMany(Exam::class);
     }
