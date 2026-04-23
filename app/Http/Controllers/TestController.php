@@ -10,4 +10,6 @@ class TestController extends Controller
     function index(){
         return view('test');
     }
+
 }
+
