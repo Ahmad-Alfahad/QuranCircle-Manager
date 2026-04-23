@@ -14,6 +14,7 @@ class Attendance extends Model
         'status',
         'notes'
     ] ;
+    
     public function circleStudent()
     {
         return $this->belongsTo(CircleStudent::class, 'circle_student_id');
