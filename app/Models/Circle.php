@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Circle extends Model
 {
     //
+    protected $fillable  = ['name'  , 'teacher_id'] ;
+    
     public function teacher()
     {
         return $this->belongsTo(User::class, 'teacher_id');
