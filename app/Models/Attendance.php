@@ -8,12 +8,15 @@ class Attendance extends Model
 {
     //
 
-    protected $flliable = [
-          'circle_student_id',
-        'date',
-        'status',
-        'notes'
-    ] ;
+
+     protected $table = 'attendance';
+
+  protected $fillable = [
+    'circle_student_id',
+    'date',
+    'status',
+    'notes',
+];
     
     public function circleStudent()
     {
