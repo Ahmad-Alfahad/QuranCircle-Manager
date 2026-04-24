@@ -6,6 +6,7 @@ use App\Http\Controllers\CircleController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\RecordController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -27,6 +28,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('students' , StudentController::class );
     Route::resource('records', RecordController::class);
     Route::resource('attendance' , AttendanceController::class);
+    Route::resource('users', UserController::class);
+    Route::post('/users/{user}/make-student', [UserController::class, 'makeStudent'])
+    ->name('users.makeStudent');
 });
 
 require __DIR__.'/auth.php';
