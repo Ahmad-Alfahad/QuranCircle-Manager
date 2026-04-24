@@ -3,22 +3,32 @@
 namespace App\Http\Controllers;
 use App\Models\Circle;
 use App\Models\User;
+use App\Models\CircleStudent;
 use Illuminate\Http\Request;
 
 class CircleController extends Controller
 {
     //
-    public function index() {
+    public function index()
+    {
         $circles = Circle::with('teacher')->get();
-        return view('circles.index' , compact('circles') ); 
+        return view('circles.index', compact('circles'));
     }
 
-    public function create() {
-        $teachers = User::where('role' , 'teacher')->get();
-        return view('circles.create' , compact('teachers'));
+    public function show(Circle $circle)
+    {
+        $circle->load('teacher', 'circleStudents.student');
+
+        return view('circles.show', compact('circle'));
     }
 
-       public function store(Request $request)
+    public function create()
+    {
+        $teachers = User::where('role', 'teacher')->get();
+        return view('circles.create', compact('teachers'));
+    }
+
+    public function store(Request $request)
     {
         $request->validate([
             'name' => 'required',
@@ -30,8 +40,8 @@ class CircleController extends Controller
         return redirect()->route('circles.index')->with('success', 'Circle created');
     }
 
-    
-     public function edit(Circle $circle)
+
+    public function edit(Circle $circle)
     {
         $teachers = User::where('role', 'teacher')->get();
         return view('circles.edit', compact('circle', 'teachers'));
@@ -49,9 +59,16 @@ class CircleController extends Controller
         return redirect()->route('circles.index')->with('success', 'Circle updated');
     }
 
-       public function destroy(Circle $circle)
+    public function destroy(Circle $circle)
     {
         $circle->delete();
         return redirect()->route('circles.index')->with('success', 'Deleted');
     }
+
+    public function removeStudent($id)
+{
+    CircleStudent::findOrFail($id)->delete();
+
+    return back()->with('success', 'Student removed');
+}
 }

@@ -31,6 +31,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('users', UserController::class);
     Route::post('/users/{user}/make-student', [UserController::class, 'makeStudent'])
     ->name('users.makeStudent');
+    Route::delete('/circle-students/{id}', [CircleController::class, 'removeStudent'])
+    ->name('circleStudents.remove');
 });
 
 require __DIR__.'/auth.php';

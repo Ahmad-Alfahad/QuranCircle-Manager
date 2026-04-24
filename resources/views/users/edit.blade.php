@@ -13,6 +13,7 @@
             <option value="admin" {{ $user->role == 'admin' ? 'selected' : '' }}>Admin</option>
             <option value="teacher" {{ $user->role == 'teacher' ? 'selected' : '' }}>Teacher</option>
             <option value="student" {{ $user->role == 'student' ? 'selected' : '' }}>Student</option>
+            <option value="user" {{ $user->role == 'user' ? 'selected' : '' }}>User</option>
         </select>
 
         <button type="submit">Update</button>

@@ -57,7 +57,7 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required',
             'email' => 'required|email',
-            'role' => 'required|in:admin,teacher,student',
+            'role' => 'required|in:admin,teacher,student,user',
         ]);
 
         $data = $request->only(['name', 'email', 'role']);

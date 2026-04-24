@@ -18,6 +18,9 @@
             <tr>
                 <td>{{ $circle->name }}</td>
                 <td>{{ $circle->teacher->name ?? '-' }}</td>
+                <td><a href="{{ route('circles.show', $circle->id) }}">
+                        View
+                    </a></td>
                 <td>
                     <a href="{{ route('circles.edit', $circle->id) }}">Edit</a>
 
