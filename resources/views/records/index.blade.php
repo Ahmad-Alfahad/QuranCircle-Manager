@@ -34,32 +34,74 @@
                     </option>
                 @endforeach
             </select>
+          
     </form>
-
-    @foreach($records as $record)
-        <p>
-            {{ $record->circleStudent->student->name }}
-            - {{ $record->circleStudent->circle->name }}
-            - {{ $record->surah->name }}
-
-            -
-            {{ $record->from}} → {{ $record->to }}
-
-
-            - {{ $record->type }}
-            - {{ $record->recorded_at ?? $record->date }}
-            @if(in_array(auth()->user()->role, ['admin', 'teacher']))
-                    <a href="{{ route('records.edit', $record) }}">Edit</a>
-                <form method="post" action="{{ route('records.destroy', $record->id) }}" onsubmit="return confirm('Are you sure?')">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit">Delete</button>
-                </form>
-            @endif
-        </p>
-    @endforeach
     @if(in_array(auth()->user()->role, ['admin', 'teacher']))
-        <a href="{{ route('records.create') }}">Add Record</a>
-    @endif
+    <a href="{{ route('records.create') }}">+ Add Record</a>
+@endif
+
+
+<table>
+    <thead>
+        <tr>
+
+            @if(auth()->user()->role != 'student')
+                <th>Student</th>
+                <th>Circle</th>
+            @endif
+
+            <th>Surah</th>
+            <th>Range</th>
+            <th>Type</th>
+            <th>Grade</th>
+            <th>Date</th>
+
+            @if(in_array(auth()->user()->role, ['admin', 'teacher']))
+                <th>Actions</th>
+            @endif
+
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach($records as $record)
+            <tr>
+
+                @if(auth()->user()->role != 'student')
+                    <td>{{ $record->circleStudent->student->name }}</td>
+                    <td>{{ $record->circleStudent->circle->name }}</td>
+                @endif
+
+                <td>{{ $record->surah->name }}</td>
+
+                <td>
+                
+                        {{ $record->from }} → {{ $record->to }}
+                  
+                </td>
+
+                <td>{{ $record->type }}</td>
+                <td>{{ $record->grade }}</td>
+                <td>{{ $record->recorded_at }}</td>
+                
+
+                @if(in_array(auth()->user()->role, ['admin', 'teacher']))
+                    <td>
+                        <a href="{{ route('records.edit', $record->id) }}">Edit</a>
+
+                        @if(auth()->user()->role == 'admin')
+                            <form method="POST" action="{{ route('records.destroy', $record->id) }}">
+                                @csrf
+                                @method('DELETE')
+                                <button>Delete</button>
+                            </form>
+                        @endif
+                    </td>
+                @endif
+
+            </tr>
+        @endforeach
+    </tbody>
+</table>
 
 </x-app-layout>

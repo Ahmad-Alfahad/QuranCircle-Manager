@@ -132,11 +132,7 @@ class RecordController extends Controller
 
     public function update(Request $request, Record $record)
     {
-        $request->validate([
-            'circle_student_id' => 'required',
-            'surah_id' => 'required',
-        ]);
-
+        
         $record->update($request->all());
 
         return redirect()->route('records.index')->with('success', 'Updated');
