@@ -44,6 +44,9 @@
     @endforeach
 
 
+@if(auth()->user()->role == 'admin')
     <a href="{{ route('users.create') }}">Add User</a>
+@endif
+
 
 </x-app-layout>

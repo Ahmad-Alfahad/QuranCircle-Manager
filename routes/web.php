@@ -25,7 +25,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::resource('circles', CircleController::class);
-    Route::resource('students' , StudentController::class );
+    Route::resource('students' , StudentController::class )->parameters(['students' => 'user']);;
     Route::resource('records', RecordController::class);
     Route::resource('attendance' , AttendanceController::class);
     Route::resource('users', UserController::class);
@@ -33,6 +33,8 @@ Route::middleware('auth')->group(function () {
     ->name('users.makeStudent');
     Route::delete('/circle-students/{id}', [CircleController::class, 'removeStudent'])
     ->name('circleStudents.remove');
+    // Route::get('/students/{user}', [StudentController::class, 'show'])
+    // ->name('students.show');
 });
 
 require __DIR__.'/auth.php';
