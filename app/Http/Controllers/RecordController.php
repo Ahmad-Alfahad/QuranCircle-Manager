@@ -14,42 +14,100 @@ class RecordController extends Controller
 
     public function index(Request $request)
     {
+        $user = auth()->user();
+
         $circleId = $request->circle_id;
         $studentId = $request->student_id;
+        $surahId = $request->surah_id;
 
-        $records = Record::with('circleStudent.student', 'circleStudent.circle', 'surah')
+        // 🧠 1. Base Query
+        $query = Record::with('circleStudent.student', 'circleStudent.circle', 'surah');
 
-            ->when($circleId, function ($query) use ($circleId) {
-                $query->whereHas('circleStudent', function ($q) use ($circleId) {
-                    $q->where('circle_id', $circleId);
-                });
-            })
+        // 🔐 2. Authorization
+        if ($user->role == 'teacher') {
+            $query->whereHas('circleStudent.circle', function ($q) use ($user) {
+                $q->where('teacher_id', $user->id);
+            });
+        } elseif ($user->role == 'student') {
+            $query->whereHas('circleStudent', function ($q) use ($user) {
+                $q->where('student_id', $user->id);
+            });
+        } elseif ($user->role != 'admin') {
+            abort(403);
+        }
 
-            ->when($studentId, function ($query) use ($studentId) {
-                $query->whereHas('circleStudent', function ($q) use ($studentId) {
-                    $q->where('student_id', $studentId);
-                });
-            })
+        // 🎯 3. Filters (تعمل معًا)
+        if ($circleId) {
+            $query->whereHas('circleStudent', function ($q) use ($circleId) {
+                $q->where('circle_id', $circleId);
+            });
+        }
 
-            ->latest()
-            ->get();
+        if ($studentId) {
+            $query->whereHas('circleStudent', function ($q) use ($studentId) {
+                $q->where('student_id', $studentId);
+            });
+        }
 
-        $circles = Circle::all();
-        $students = CircleStudent::with('student')->get();
+        if ($surahId) {
+            $query->where('surah_id', $surahId);
+        }
 
-        return view('records.index', compact('records', 'circles', 'students'));
+        $records = $query->latest()->get();
+
+        // 🎨 4. Filters Data (UI)
+
+        if ($user->role == 'admin') {
+            $circles = Circle::all();
+            $circleStudents = CircleStudent::with('student', 'circle')->get();
+        } elseif ($user->role == 'teacher') {
+            $circles = Circle::where('teacher_id', $user->id)->get();
+            $circleStudents = CircleStudent::whereHas('circle', function ($q) use ($user) {
+                $q->where('teacher_id', $user->id);
+            })->with('student', 'circle')->get();
+        } elseif ($user->role == 'student') {
+            $circles = Circle::whereHas('circleStudents', function ($q) use ($user) {
+                $q->where('student_id', $user->id);
+            })->get();
+
+            $circleStudents = CircleStudent::where('student_id', $user->id)
+                ->with('student', 'circle')
+                ->get();
+        } else {
+            abort(403);
+        }
+
+        $surahs = Surah::all();
+
+        return view('records.index', compact(
+            'records',
+            'circles',
+            'circleStudents',
+            'surahs'
+        ));
     }
 
     public function create()
     {
-        $students = CircleStudent::with('student')->get();
+        $user = auth()->user();
+        if ($user->role == 'admin') {
+            $students = CircleStudent::with('student')->get();
+        } elseif ($user->role == 'teacher') {
+            $students = CircleStudent::whereHas('circle', function ($q) use ($user) {
+                $q->where('teacher_id', $user->id);
+            })->with('student')->get();
+        } else {
+            abort(403);
+        }
         $surahs = Surah::all();
-
         return view('records.create', compact('students', 'surahs'));
     }
 
     public function store(Request $request)
     {
+        if (!in_array(auth()->user()->role, ['admin', 'teacher'])) {
+            abort(403);
+        }
         $request->validate([
             'circle_student_id' => 'required|exists:circle_student,id',
             'surah_id' => 'required|exists:surahs,id',
