@@ -5,7 +5,7 @@
         @csrf
 
         <select name="circle_student_id">
-            @foreach($students as $s)
+            @foreach($circleStudents  as $s)
                 <option value="{{ $s->id }}">
                     {{ $s->student->name }}
                 </option>
