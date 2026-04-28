@@ -5,13 +5,27 @@
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    {{ __("You're logged in!") }}
-                </div>
-            </div>
+    @foreach($stats as $key => $value)
+        <div style="display:inline-block; margin:10px; padding:15px; border:1px solid #ccc;">
+            <h3>{{ ucfirst($key) }}</h3>
+            <p>{{ $value }}</p>
         </div>
-    </div>
+    @endforeach
+
+
+<h3>Recent Records</h3>
+
+@foreach($recentRecords as $r)
+    <p>
+        {{ $r->circleStudent->student->name ?? '' }}
+        - {{ $r->surah->name ?? '' }}
+    </p>
+@endforeach
+<h3>Recent Attendance</h3>
+
+@foreach($recentAttendance as $a)
+    <p>
+        {{ $a->date }} - {{ $a->status }}
+    </p>
+@endforeach
 </x-app-layout>

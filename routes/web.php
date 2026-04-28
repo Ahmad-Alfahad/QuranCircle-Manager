@@ -7,6 +7,7 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\RecordController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -38,6 +39,8 @@ Route::middleware('auth')->group(function () {
         ->name('students.records');
     Route::get('/students/{user}/attendance', [StudentController::class, 'attendance'])
         ->name('students.attendance');
+        Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->name('dashboard');
     // Route::get('/students/{user}', [StudentController::class, 'show'])
     // ->name('students.show');
 });
