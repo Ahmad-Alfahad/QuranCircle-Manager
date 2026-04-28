@@ -16,10 +16,14 @@
             {{ $cs->student->name }}
             (Joined: {{ $cs->joined_at }})
         </p>
-        <form method="POST" action="{{ route('circleStudents.remove', $cs->id) }}">
-    @csrf
-    @method('DELETE')
-    <button>Remove</button>
-</form>
+        @if (auth()->user()->role == 'admin')
+
+
+            <form method="POST" action="{{ route('circleStudents.remove', $cs->id) }}">
+                @csrf
+                @method('DELETE')
+                <button>Remove</button>
+        @endif
+        </form>
     @endforeach
 </x-app-layout>

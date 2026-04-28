@@ -5,7 +5,7 @@
     filter by circle
     <form action="" method="GET">
             filter by circle
-        <select name="circle_id" onchange="this.form.submit()">
+        <select name="circle_id" >
             <option value="">All Circles</option>
             @foreach($circles as $circle)
                 <option value="{{ $circle->id }}" {{ request('circle_id') == $circle->id ? 'selected' : '' }}>
@@ -15,7 +15,7 @@
         </select>
         @if (in_array(auth()->user()->role, ['admin', 'teacher']))
         filter by student
-        <select name="student_id" id="" onchange="this.form.submit()">
+        <select name="student_id" id="" >
             <option value="">All Students</option>
             @foreach($circleStudents->pluck('student')->unique() as $student)
                 <option value="{{ $student->id }}" {{ request('student_id') == $student->id ? 'selected' : '' }}>
@@ -26,7 +26,7 @@
         @endif
         
             filter by surah
-            <select name="surah_id" id="" onchange="this.form.submit()">
+            <select name="surah_id" id="" >
                 <option value="">All Surahs</option>
                 @foreach($surahs as $surah)
                     <option value="{{ $surah->id }}" {{ request('surah_id') == $surah->id ? 'selected' : '' }}>
@@ -34,7 +34,7 @@
                     </option>
                 @endforeach
             </select>
-          
+          <button>Filter</button>
     </form>
     @if(in_array(auth()->user()->role, ['admin', 'teacher']))
     <a href="{{ route('records.create') }}">+ Add Record</a>

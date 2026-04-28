@@ -2,6 +2,8 @@
     <h2>Edit Attendance</h2>
 
     <form method="POST" action="{{ route('attendance.update', $attendance->id) }}">
+        <input type="hidden" name="redirect_to" value="{{ request('redirect_to') }}">
+
         @csrf
         @method('PUT')
 
@@ -19,7 +21,7 @@
         <select name="status">
             <option value="present" {{ $attendance->status == 'present' ? 'selected' : '' }}>Present</option>
             <option value="absent" {{ $attendance->status == 'absent' ? 'selected' : '' }}>Absent</option>
-            <option value="late" {{ $attendance->status == 'late' ? 'selected' : '' }}>Late</option>
+            <option value="excused" {{ $attendance->status == 'excused' ? 'selected' : '' }}>Excused</option>
         </select>
 
         <textarea name="notes">{{ $attendance->notes }}</textarea>

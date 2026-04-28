@@ -25,16 +25,21 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::resource('circles', CircleController::class);
-    Route::resource('students' , StudentController::class )->parameters(['students' => 'user']);;
+    Route::resource('students', StudentController::class)->parameters(['students' => 'user']);
+    ;
     Route::resource('records', RecordController::class);
-    Route::resource('attendance' , AttendanceController::class);
+    Route::resource('attendance', AttendanceController::class);
     Route::resource('users', UserController::class);
     Route::post('/users/{user}/make-student', [UserController::class, 'makeStudent'])
-    ->name('users.makeStudent');
+        ->name('users.makeStudent');
     Route::delete('/circle-students/{id}', [CircleController::class, 'removeStudent'])
-    ->name('circleStudents.remove');
+        ->name('circleStudents.remove');
+    Route::get('/students/{user}/records', [StudentController::class, 'records'])
+        ->name('students.records');
+    Route::get('/students/{user}/attendance', [StudentController::class, 'attendance'])
+        ->name('students.attendance');
     // Route::get('/students/{user}', [StudentController::class, 'show'])
     // ->name('students.show');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

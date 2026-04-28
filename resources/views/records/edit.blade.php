@@ -1,6 +1,7 @@
 <x-app-layout>
     <h2>Edit record</h2>
     <form method="POST" action="{{ route('records.update', $record) }}">
+        <input type="hidden" name="redirect_to" value="{{ request('redirect_to') }}">
         @csrf
         @method('PUT')
 

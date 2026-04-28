@@ -135,13 +135,14 @@ class RecordController extends Controller
         
         $record->update($request->all());
 
-        return redirect()->route('records.index')->with('success', 'Updated');
-    }
+return redirect()->to($request->redirect_to ?? route('dashboard'))
+    ->with('success', 'updated');        }
 
     public function destroy(Record $record)
     {
         $record->delete();
-        return redirect()->route('records.index')->with('success', 'Deleted');
+        return redirect()->to($request->redirect_to ?? url()->previous())
+            ->with('success', 'Deleted');
     }
 
 

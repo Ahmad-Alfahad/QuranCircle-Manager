@@ -11,7 +11,15 @@ class CircleController extends Controller
     //
     public function index()
     {
-        $circles = Circle::with('teacher')->get();
+        $user = auth()->user();
+        if ( $user->role == 'admin') {
+            $circles = Circle::with('teacher')->get();
+        }
+        elseif($user->role == 'teacher') {
+            $circles = Circle::where('teacher_id' , $user->id)->get() ;
+        } else {
+            abort(403);
+        }
         return view('circles.index', compact('circles'));
     }
 
@@ -66,9 +74,9 @@ class CircleController extends Controller
     }
 
     public function removeStudent($id)
-{
-    CircleStudent::findOrFail($id)->delete();
+    {
+        CircleStudent::findOrFail($id)->delete();
 
-    return back()->with('success', 'Student removed');
-}
+        return back()->with('success', 'Student removed');
+    }
 }

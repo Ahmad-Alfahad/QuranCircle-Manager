@@ -141,4 +141,37 @@ class StudentController extends Controller
         $user->delete();
         return redirect()->route('students.index')->with('success', 'Deleted');
     }
+
+    public function records(User $user ) {
+        if(auth()->user()->role == 'student' && auth()->id() != $user->id) {
+            abort(403);
+        }
+      
+        $records = Record::whereHas('circleStudent', function ($q) use ($user) {
+            $q->where('student_id', $user->id);
+        })
+            ->with('surah', 'circleStudent.circle')
+            ->latest()
+            ->get();
+
+        return view('students.records', compact('records' , 'user'));
+
+    }
+
+    public function attendance( User $user ) {
+        if(auth()->user()->role == 'student' && auth()->id() != $user->id) {
+            abort(403);
+        }
+      
+           
+        
+        $attendance = Attendance::whereHas('circleStudent', function ($q) use ($user) {
+            $q->where('student_id', $user->id);
+        })
+            ->latest()
+            ->get();
+
+        return view('students.attendance', compact('attendance' , 'user'));
+
+    }
 }
