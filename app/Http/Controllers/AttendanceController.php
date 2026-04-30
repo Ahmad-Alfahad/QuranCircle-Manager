@@ -6,44 +6,23 @@ use App\Models\CircleStudent;
 use Illuminate\Http\Request;
 use App\Models\Attendance;
 use App\Models\Circle;
+use App\Services\AttendanceService;
 
 class AttendanceController extends Controller
 {
     //
-    public function index(Request $request)
+    public function index(Request $request , AttendanceService $attendanceService)
     {
         $user = auth()->user();
+        
+        $filter = $request->only([
+            'circle_id',
+            'student_id',
+        ]);
 
-        $circleId = $request->circle_id;
-        $studentId = $request->student_id;
-        $query = Attendance::with('circleStudent.student', 'circleStudent.circle');
-        // 🔐 Authorization
-        if ($user->role == 'teacher') {
-            $query->whereHas('circleStudent.circle', function ($q) use ($user) {
-                $q->where('teacher_id', $user->id);
-            });
-        } elseif ($user->role == 'student') {
-            $query->whereHas('circleStudent', function ($q) use ($user) {
-                $q->where('student_id', $user->id);
-            });
-        } elseif ($user->role != 'admin') {
-            abort(403);
-        }
-
-        // 🎯 Filters
-        if ($circleId) {
-            $query->whereHas('circleStudent', function ($q) use ($circleId) {
-                $q->where('circle_id', $circleId);
-            });
-        }
-
-        if ($studentId) {
-            $query->whereHas('circleStudent', function ($q) use ($studentId) {
-                $q->where('student_id', $studentId);
-            });
-        }
-
-        $attendance = $query->latest()->get();
+        $attendance = $attendanceService->list($user , $filter) ;
+        
+       
         // 🎨 Filter Data
         if ($user->role == 'admin') {
             $circles = Circle::all();
