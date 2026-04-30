@@ -7,78 +7,51 @@ use App\Models\Record;
 use App\Models\CircleStudent;
 use App\Models\Surah;
 use App\Models\Circle;
+use App\Services\RecordService;
 
 class RecordController extends Controller
 {
     //
+    private $recordService;
 
-    public function index(Request $request)
+    public function __construct(RecordService $recordService)
     {
+        $this->recordService = $recordService;
+    }
+
+    public function index(Request $request , RecordService $recordService)
+    {
+
         $user = auth()->user();
 
-        $circleId = $request->circle_id;
-        $studentId = $request->student_id;
-        $surahId = $request->surah_id;
+       $filter = $request->only([
+        'circle_id',
+         'student_id',
+          'surah_id'
+          ]);
 
-        // 🧠 1. Base Query
-        $query = Record::with('circleStudent.student', 'circleStudent.circle', 'surah');
 
-        // 🔐 2. Authorization
-        if ($user->role == 'teacher') {
-            $query->whereHas('circleStudent.circle', function ($q) use ($user) {
-                $q->where('teacher_id', $user->id);
-            });
-        } elseif ($user->role == 'student') {
-            $query->whereHas('circleStudent', function ($q) use ($user) {
-                $q->where('student_id', $user->id);
-            });
-        } elseif ($user->role != 'admin') {
-            abort(403);
-        }
+       $records = $recordService->list($user , $filter) ;
 
-        // 🎯 3. Filters (تعمل معًا)
-        if ($circleId) {
-            $query->whereHas('circleStudent', function ($q) use ($circleId) {
-                $q->where('circle_id', $circleId);
-            });
-        }
+       if($user->role === 'admin') {
+        $circles = Circle::all() ;
+        $circleStudents = CircleStudent::with('student')->get() ;   
+         } elseif($user->role === 'teacher') {  
+            $circles = Circle::where('teacher_id' , $user->id)->get() ;
+            $circleStudents = CircleStudent::whereHas('circle' , function($q) use ($user) {
+                $q->where('teacher_id' , $user->id) ;
+            })->with('student')->get() ;
+         } elseif($user->role === 'student') {
+            $circles = Circle::whereHas('circleStudents' , function($q) use ($user) {
+                $q->where('student_id' , $user->id) ;
+            })->get() ;
+            $circleStudents = CircleStudent::where('student_id' , $user->id)->with('student' , 'circle')->get() ;
+         } else {
+            abort(403) ;
+         }
 
-        if ($studentId) {
-            $query->whereHas('circleStudent', function ($q) use ($studentId) {
-                $q->where('student_id', $studentId);
-            });
-        }
-
-        if ($surahId) {
-            $query->where('surah_id', $surahId);
-        }
-
-        $records = $query->latest()->get();
-
-        // 🎨 4. Filters Data (UI)
-
-        if ($user->role == 'admin') {
-            $circles = Circle::all();
-            $circleStudents = CircleStudent::with('student', 'circle')->get();
-        } elseif ($user->role == 'teacher') {
-            $circles = Circle::where('teacher_id', $user->id)->get();
-            $circleStudents = CircleStudent::whereHas('circle', function ($q) use ($user) {
-                $q->where('teacher_id', $user->id);
-            })->with('student', 'circle')->get();
-        } elseif ($user->role == 'student') {
-            $circles = Circle::whereHas('circleStudents', function ($q) use ($user) {
-                $q->where('student_id', $user->id);
-            })->get();
-
-            $circleStudents = CircleStudent::where('student_id', $user->id)
-                ->with('student', 'circle')
-                ->get();
-        } else {
-            abort(403);
-        }
-
-        $surahs = Surah::all();
-
+        $surahs = Surah::all() ;
+        
         return view('records.index', compact(
             'records',
             'circles',
