@@ -21,6 +21,7 @@
         - {{ $r->surah->name ?? '' }}
     </p>
 @endforeach
+
 <h3>Recent Attendance</h3>
 
 @foreach($recentAttendance as $a)

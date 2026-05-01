@@ -4,18 +4,18 @@
         <div class="flex justify-between h-16">
             <div class="flex">
                 <!-- Logo -->
-                <div class="shrink-0 flex items-center">
+                <!-- <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">
                         <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
                     </a>
-                </div>
+                </div> -->
 
                 <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                <!-- <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                </div>
+                </div> -->
             </div>
 
             <!-- Settings Dropdown -->
@@ -34,10 +34,25 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')">
+                        <x-dropdown-link :href="route('profile.edit')" :active="request()->routeIs('profile.edit')">
                             {{ __('Profile') }}
                         </x-dropdown-link>
+                            @if(in_array(auth()->user()->role, ['admin' , 'teacher']))
+                        <x-dropdown-link :href="route('students.index')" :active="request()->routeIs('students.index')">
+                            {{ __('Students') }}
+                        </x-dropdown-link>
 
+                        <x-dropdown-link :href="route('users.index')"  :active="request()->routeIs('users.index')">
+                            {{ __('Users') }}
+                        </x-dropdown-link>
+                         @endif
+                        <x-dropdown-link :href="route('attendance.index')" :active="request()->routeIs('attendance.index')">
+                            {{ __('Attendance') }}
+                        </x-dropdown-link>
+                        <x-dropdown-link :href="route('circles.index')" :active="request()->routeIs('circles.index')">
+                            {{ __('Circles') }}
+                        </x-dropdown-link>
+                        
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf

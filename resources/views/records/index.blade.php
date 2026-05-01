@@ -1,4 +1,8 @@
 <x-app-layout>
+    @section('title', 'Records')
+    @section('breadcrumbs')
+    Dashboard / Records
+@endsection
     <h2>Records</h2>
 
 

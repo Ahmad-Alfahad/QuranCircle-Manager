@@ -1,4 +1,8 @@
 <x-app-layout>
+    @section('title', 'Circles')
+    @section('breadcrumbs')
+    Dashboard / Circles / {{ $circles->count() }} circles
+    @endsection
     <h2>Circles</h2>
     @if(auth()->user()->role == 'admin')
         <a href="{{ route('circles.create') }}">Add Circle</a>

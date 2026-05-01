@@ -1,4 +1,8 @@
 <x-app-layout>
+    @section('title', 'Students')
+    @section('breadcrumbs') 
+    Dashboard / Students / {{ $students->count() }} students
+    @endsection
     <h2>Students</h2>
 
     @if(auth()->user()->role == 'admin')

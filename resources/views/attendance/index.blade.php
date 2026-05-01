@@ -1,4 +1,8 @@
 <x-app-layout>
+    @section('title', 'Attendance')
+    @section('breadcrumbs')
+    Dashboard / Attendance
+    @endsection
     <h2>Attendance</h2>
     @if(in_array(auth()->user()->role, ['admin', 'teacher']))
     <a href="{{ route('attendance.create') }}">+ Add Attendance</a>

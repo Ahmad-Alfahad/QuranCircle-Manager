@@ -1,6 +1,13 @@
-<x-app-layout>
-    <h2>Users</h2>
 
+
+<x-app-layout>
+    @section('title', 'Users')
+    @section('breadcrumbs')
+    Dashboard / Users
+    @endsection
+    <x-slot>
+        <h2>Users</h2>
+    </x-slot>
     <!-- 🔥 Filter -->
     <a href="{{ route('users.index') }}">All</a> |
     <a href="{{ route('users.index', ['role' => 'teacher']) }}">Teachers</a> |
