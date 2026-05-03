@@ -7,14 +7,14 @@
     @endsection
     <x-slot>
         <h2>Users</h2>
-    </x-slot>
+    
     <!-- 🔥 Filter -->
+     
     <a href="{{ route('users.index') }}">All</a> |
     <a href="{{ route('users.index', ['role' => 'teacher']) }}">Teachers</a> |
     <a href="{{ route('users.index', ['role' => 'student']) }}">Students</a> |
     <a href="{{ route('users.index', ['role' => 'admin']) }}">Admins</a>
     <a href="{{ route('users.index', ['role' => 'user']) }}">users</a>
-
     <hr>
 
     @if($users->isEmpty())
@@ -54,6 +54,6 @@
 @if(auth()->user()->role == 'admin')
     <a href="{{ route('users.create') }}">Add User</a>
 @endif
-
+</x-slot>
 
 </x-app-layout>

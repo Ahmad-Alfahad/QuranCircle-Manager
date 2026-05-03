@@ -1,44 +1,47 @@
 <x-app-layout>
     @section('title', 'Attendance')
     @section('breadcrumbs')
-    Dashboard / Attendance
+        Dashboard / Attendance
     @endsection
     <h2>Attendance</h2>
     @if(in_array(auth()->user()->role, ['admin', 'teacher']))
-    <a href="{{ route('attendance.create') }}">+ Add Attendance</a>
-@endif
-  @if(in_array(auth()->user()->role, ['admin', 'teacher']))
+        <a href="{{ route('attendance.create') }}">+ Add Attendance</a>
+    @endif
+    @if(in_array(auth()->user()->role, ['admin', 'teacher']))
 
-<form method="GET">
+        <form method="GET">
 
-    <!-- Circle -->
-    <select name="circle_id">
-        <option value="">All Circles</option>
-        @foreach($circles as $circle)
-            <option value="{{ $circle->id }}"
-                {{ request('circle_id') == $circle->id ? 'selected' : '' }}>
-                {{ $circle->name }}
-            </option>
-        @endforeach
-    </select>
+            <!-- Circle -->
+            <select name="circle_id">
+             
+                <option value="">All Circles</option>
+                @foreach($circles as $circle)
+                    <option value="{{ $circle->id }}" {{ request('circle_id') == $circle->id ? 'selected' : '' }}>
+                        {{ $circle->name }}
+                    </option>
+                @endforeach
+            
+            </select>
 
-    <!-- Student -->
-    <select name="student_id">
-        <option value="">All Students</option>
-        @foreach($circleStudents as $cs)
-            <option value="{{ $cs->student->id }}"
-                {{ request('student_id') == $cs->student->id ? 'selected' : '' }}>
-                {{ $cs->student->name }}
-            </option>
-        @endforeach
-    </select>
-    
-    <button>Filter</button>
+            <!-- Student -->
+            <select name="student_id">
+                <option value="">All Students</option>
+                @foreach($circleStudents as $cs)
+                    <option value="{{ $cs->student->id }}" {{ request('student_id') == $cs->student->id ? 'selected' : '' }}>
+                        {{ $cs->student->name }}
+                    </option>
+                @endforeach
+            </select>
 
-</form>
+            <button>Filter</button>
 
-@endif
+        </form>
 
+    @endif
+
+    @if ($attendance->isEmpty())
+        <p>No attendance records found.</p>
+    @else
     <table>
         <thead>
             <tr>
@@ -81,8 +84,8 @@
             @endforeach
         </tbody>
     </table>
+  @endif
 
-    
     <!-- @foreach($attendance as $att)
         <p>
             {{ $att->circleStudent->student->name }}

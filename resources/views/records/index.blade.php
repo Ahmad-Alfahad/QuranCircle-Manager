@@ -4,8 +4,6 @@
     Dashboard / Records
 @endsection
     <h2>Records</h2>
-
-
     filter by circle
     <form action="" method="GET">
             filter by circle
@@ -44,7 +42,9 @@
     <a href="{{ route('records.create') }}">+ Add Record</a>
 @endif
 
-
+@if ($records->isEmpty())
+    <p>No records found.</p>
+@else
 <table>
     <thead>
         <tr>
@@ -107,5 +107,6 @@
         @endforeach
     </tbody>
 </table>
+@endif
 
 </x-app-layout>

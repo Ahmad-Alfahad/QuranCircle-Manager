@@ -10,7 +10,9 @@
     @if(session('success'))
         <p>{{ session('success') }}</p>
     @endif
-
+    @if ($circles->isEmpty())
+        <p>No circles found.</p>
+    @else
     <table border="1">
         <tr>
             <th>Name</th>
@@ -47,4 +49,5 @@
             </tr>
         @endforeach
     </table>
+    @endif
 </x-app-layout>
