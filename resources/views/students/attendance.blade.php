@@ -1,4 +1,12 @@
 <x-app-layout>
+    @section('title', 'Attendance for ' . $user->name)
+    @section('breadcrumbs')
+        Dashboard / Students / {{ $user->name }} / Attendance   
+    @endsection 
+    @if($attendance->isEmpty())
+        <p>No attendance records found for {{ $user->name }}.</p>
+    @else   
+
     <h2>Attendance for {{ $user->name }}</h2>
     <table>
         <thead>
@@ -35,4 +43,5 @@
             @endforeach
         </tbody>
     </table>
+    @endif
 </x-app-layout>

@@ -1,4 +1,15 @@
 <x-app-layout>
+    @section('title', 'Records for ' . $user->name)
+    @section('breadcrumbs')
+        Dashboard / Students / {{ $user->name }} / Records
+    @endsection
+        <x-slot>
+            <h2>Records for {{ $user->name }}</h2>
+        </x-slot>
+        @if ($records->isEmpty())
+            <p>No records found for {{ $user->name }}.</p>
+        @else
+        
     <h2>Records for {{ $user->name }}</h2>
     <table>
         <thead>
@@ -42,5 +53,5 @@
             @endforeach
         </tbody>
     </table>
-
+@endif
 </x-app-layout>
