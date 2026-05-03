@@ -8,10 +8,9 @@ use Illuminate\Support\Facades\Gate;
 use App\Models\Record;
 use App\Models\CircleStudent;
 use App\Models\Surah;
-use App\Models\Circle;
 use App\Models\User;
 use App\Services\RecordService;
-
+use App\Services\ViewDataService;
 class RecordController extends Controller
 {
     use AuthorizesRequests;
@@ -22,66 +21,39 @@ class RecordController extends Controller
         $this->recordService = $recordService;
     }
 
-    public function index(Request $request , RecordService $recordService)
+    public function index(Request $request, RecordService $recordService, ViewDataService $viewDataService)
     {
-        Gate::authorize('viewAny' , Record::class) ;
+        Gate::authorize('viewAny', Record::class);
 
         $user = auth()->user();
 
-       $filter = $request->only([
-        'circle_id',
-         'student_id',
-          'surah_id'
-          ]);
+        $filter = $request->only([
+            'circle_id',
+            'student_id',
+            'surah_id'
+        ]);
 
 
-       $records = $recordService->list($user , $filter) ;
+        $records = $recordService->list($user, $filter);
 
-       if($user->role === 'admin') {
+        $data = $viewDataService->getFiltersData($user);
+        $circles = $data['circles'];
+        $circleStudents = $data['circleStudents'];
+        $surahs = $viewDataService->getSurahsData();
 
-        $circles = Circle::all() ;
-
-        $circleStudents = CircleStudent::with('student')->get() ;   
-
-         }  elseif($user->role === 'teacher') { 
-
-            $circles = Circle::where('teacher_id' , $user->id)->get() ;
-
-            $circleStudents = CircleStudent::whereHas('circle' , function($q) use ($user) {
-
-                $q->where('teacher_id' , $user->id) ;
-
-            })->with('student')->get() ;
-
-         } elseif($user->role === 'student') {
-
-            $circles = Circle::whereHas('circleStudents' , function($q) use ($user) {
-
-                $q->where('student_id' , $user->id) ;
-
-            })->get() ;
-
-            $circleStudents = CircleStudent::where('student_id' , $user->id)->with('student' , 'circle')->get() ;
-
-         } else {
-
-            abort(403) ;
-
-         }
-
-        $surahs = Surah::all() ;
-        
         return view('records.index', compact(
             'records',
             'circles',
             'circleStudents',
             'surahs'
         ));
+
     }
 
     public function create()
-    {   $user = auth()->user();
-        Gate::authorize('create' , Record::class) ;
+    {
+        $user = auth()->user();
+        Gate::authorize('create', Record::class);
         if ($user->role == 'admin') {
             $students = CircleStudent::with('student')->get();
         } elseif ($user->role == 'teacher') {
@@ -97,7 +69,7 @@ class RecordController extends Controller
 
     public function store(Request $request)
     {
-       Gate::authorize('create', Record::class);
+        Gate::authorize('create', Record::class);
 
         $request->validate([
             'circle_student_id' => 'required|exists:circle_student,id',
@@ -114,7 +86,7 @@ class RecordController extends Controller
     }
 
     public function edit(Record $record)
-    {     
+    {
         Gate::authorize('update', $record);
         $students = CircleStudent::with('student')->get();
         $surahs = Surah::all();
@@ -124,24 +96,25 @@ class RecordController extends Controller
 
     public function update(Request $request, Record $record)
     {
-       
+
         Gate::authorize('update', $record);
         $record->update($request->all());
 
-return redirect()->to($request->redirect_to ?? route('dashboard'))
-    ->with('success', 'updated');  
+        return redirect()->to($request->redirect_to ?? route('dashboard'))
+            ->with('success', 'updated');
     }
 
     public function destroy(Record $record)
-    {  
+    {
         Gate::authorize('delete', $record);
         $record->delete();
         return redirect()->to($request->redirect_to ?? url()->previous())
             ->with('success', 'Deleted');
     }
 
-    public function view(Record $record , User $user)
-    {   Gate::authorize('view' , $record) ;
+    public function view(Record $record, User $user)
+    {
+        Gate::authorize('view', $record);
         return view('records.view', compact('record'));
     }
 

@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\CircleStudent;
 use Illuminate\Http\Request;
 use App\Models\Attendance;
-use App\Models\Circle;
 use App\Services\AttendanceService;
+use App\Services\ViewDataService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Gate;
 
@@ -14,7 +14,7 @@ class AttendanceController extends Controller
 {
     use AuthorizesRequests;
     //
-    public function index(Request $request, AttendanceService $attendanceService)
+    public function index(Request $request, AttendanceService $attendanceService , ViewDataService $ViewDataService)
     {
         $user = auth()->user();
         Gate::authorize('viewAny', Attendance::class);
@@ -27,28 +27,9 @@ class AttendanceController extends Controller
 
 
         // 🎨 Filter Data
-        if ($user->role == 'admin') {
-            $circles = Circle::all();
-            $circleStudents = CircleStudent::with('student', 'circle')->get();
-        } elseif ($user->role == 'teacher') {
-            $circles = Circle::where('teacher_id', $user->id)->get();
-            $circleStudents = CircleStudent::with('student', 'circle')
-                ->whereHas('circle', function ($q) use ($user) {
-                    $q->where('teacher_id', $user->id);
-                })
-                ->get();
-        } elseif ($user->role == 'student') {
-            $circles = Circle::whereHas('circleStudents', function ($q) use ($user) {
-                $q->where('student_id', $user->id);
-            })->get();
-            $circleStudents = CircleStudent::with('student', 'circle')
-                ->where('student_id', $user->id)
-                ->get();
-        } else {
-            $circles = collect();
-            $circleStudents = collect();
-        }
-
+        $data = $ViewDataService->getFiltersData($user);
+            $circles = $data['circles'];
+            $circleStudents = $data['circleStudents'];
         return view('attendance.index', compact(
             'attendance',
             'circles',
