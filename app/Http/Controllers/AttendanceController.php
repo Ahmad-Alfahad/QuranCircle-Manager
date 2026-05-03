@@ -7,22 +7,25 @@ use Illuminate\Http\Request;
 use App\Models\Attendance;
 use App\Models\Circle;
 use App\Services\AttendanceService;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Gate;
 
 class AttendanceController extends Controller
 {
+    use AuthorizesRequests;
     //
-    public function index(Request $request , AttendanceService $attendanceService)
+    public function index(Request $request, AttendanceService $attendanceService)
     {
         $user = auth()->user();
-        
+        Gate::authorize('viewAny', Attendance::class);
         $filter = $request->only([
             'circle_id',
             'student_id',
         ]);
 
-        $attendance = $attendanceService->list($user , $filter) ;
-        
-       
+        $attendance = $attendanceService->list($user, $filter);
+
+
         // 🎨 Filter Data
         if ($user->role == 'admin') {
             $circles = Circle::all();
@@ -60,7 +63,7 @@ class AttendanceController extends Controller
         }
 
         $user = auth()->user();
-
+        Gate::authorize('create', Attendance::class);
         if ($user->role == 'teacher') {
             $circleStudents = CircleStudent::whereHas('circle', function ($q) use ($user) {
                 $q->where('teacher_id', $user->id);
@@ -76,6 +79,7 @@ class AttendanceController extends Controller
     {
         // 🔐 Authorization
         $user = auth()->user();
+        Gate::authorize('view', $attendance);
         if ($user->role == 'teacher' && $attendance->circleStudent->circle->teacher_id != $user->id) {
             abort(403);
         }
@@ -89,6 +93,7 @@ class AttendanceController extends Controller
 
     public function store(Request $request)
     { //dd($request->only(['circle_student_id', 'date', 'status','notes']));
+        Gate::authorize('create', Attendance::class);
         if (!in_array(auth()->user()->role, ['admin', 'teacher'])) {
             abort(403);
         }
@@ -113,6 +118,7 @@ class AttendanceController extends Controller
     }
     public function edit(Attendance $attendance)
     {
+        Gate::authorize('update', $attendance);
         $students = CircleStudent::with('student')->get();
         return view('attendance.edit', compact('attendance', 'students'));
     }
@@ -126,14 +132,17 @@ class AttendanceController extends Controller
             'status' => $request->status,
             'notes' => $request->notes,
         ]);
-//  dd($request->all());
-return redirect()->to($request->redirect_to ?? route('dashboard'))
-    ->with('success', 'updated');    }
+        //  dd($request->all());
+        return redirect()->to($request->redirect_to ?? route('dashboard'))
+            ->with('success', 'updated');
+    }
 
-    public function destroy(Attendance $attendance , Request $request)
+    public function destroy(Attendance $attendance, Request $request)
     {
+        Gate::authorize('delete', $attendance);
         $attendance->delete();
 
-return redirect()->to($request->redirect_to ?? url()->previous())
-    ->with('success', 'deleted');        }
+        return redirect()->to($request->redirect_to ?? url()->previous())
+            ->with('success', 'deleted');
+    }
 }
