@@ -4,8 +4,9 @@ namespace App\Policies;
 
 use App\Models\Record;
 use App\Models\User;
-use HandlesRoles;
 use Illuminate\Auth\Access\Response;
+use App\Policies\Traits\HandlesRoles;
+
 
 class RecordPolicy
 {

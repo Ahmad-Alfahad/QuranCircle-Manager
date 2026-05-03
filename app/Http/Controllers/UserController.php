@@ -10,8 +10,12 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
+        $user = auth()->user();
+         if (!in_array($user->role, ['admin'])) {
+            abort(403);
+        }
         $role = $request->role;
-
+        
         $users = User::when($role, function ($query) use ($role) {
             $query->where('role', $role);
         })->get();

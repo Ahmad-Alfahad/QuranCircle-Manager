@@ -1,4 +1,5 @@
 <?php
+namespace App\Policies\Traits;
 trait HandlesRoles
 {
     public function isAdmin($user)

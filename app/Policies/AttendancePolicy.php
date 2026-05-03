@@ -4,11 +4,11 @@ namespace App\Policies;
 
 use App\Models\Attendance;
 use App\Models\User;
-use HandlesRoles;
+use App\Policies\Traits\HandlesRoles;
 use Illuminate\Auth\Access\Response;
 
 class AttendancePolicy
-{
+{ 
     use HandlesRoles;
     /**
      * Determine whether the user can view any models.
