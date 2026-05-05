@@ -1,12 +1,22 @@
 <x-app-layout>
+        <x-slot name="header">
+        <div class="flex items-center justify-between">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            Attendance
+        </h2>
+            @if(in_array(auth()->user()->role, ['admin', 'teacher']))
+      
+        <button><a href="{{ route('attendance.create') }}" class="bg-green-500 text-white p-2 rounded hover:bg-green-600">
+            Create Attendance
+        </a></button>
+      </div>
+    @endif
+    </x-slot>
     @section('title', 'Attendance')
     @section('breadcrumbs')
         Dashboard / Attendance
     @endsection
-    <h2>Attendance</h2>
-    @if(in_array(auth()->user()->role, ['admin', 'teacher']))
-        <a href="{{ route('attendance.create') }}">+ Add Attendance</a>
-    @endif
+
     @if(in_array(auth()->user()->role, ['admin', 'teacher']))
 
         <form method="GET">

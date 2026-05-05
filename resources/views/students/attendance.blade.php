@@ -1,47 +1,52 @@
 <x-app-layout>
-    @section('title', 'Attendance for ' . $user->name)
-    @section('breadcrumbs')
-        Dashboard / Students / {{ $user->name }} / Attendance   
-    @endsection 
+    <x-slot name="header">
+        <h4 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Attendance For Student :')   }}{{ $user->name }}
+    </x-slot>
+    <div class="m-6">
     @if($attendance->isEmpty())
         <p>No attendance records found for {{ $user->name }}.</p>
-    @else   
-
-    <h2>Attendance for {{ $user->name }}</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Status</th>
-                <th>Notes</th>
-                @if (in_array(auth()->user()->role, ['admin', 'teacher']))
-                    <th>Actions</th>
-                @endif
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($attendance as $att)
-                <tr>
-                    <td>{{ $att->date }}</td>
-                    <td>{{ $att->status }}</td>
-                    <td>{{ $att->notes }}</td>
+    @else
+        
+        <div  class="bg-white shadow rounded">
+            <table class="w-full text-sm">
+                <thead class="bg-gray-100">
+                    <th class="p-2 text-left">Date</th>
+                    <th class="p-2 text-left">Status</th>
+                    <th class="p-2 text-left">Notes</th>
                     @if (in_array(auth()->user()->role, ['admin', 'teacher']))
-                        <td>
-                            <a href="{{ route('attendance.edit', $att->id) }}?redirect_to={{ url()->current() }}">Edit</a>
-
-                            <form method="POST"
-                                action="{{ route('attendance.destroy', $att->id) }}">
-                                <input type="hidden" name="redirect_to" value="{{ request('redirect_to') }}">
-
-                                @csrf
-                                @method('DELETE')
-                                <button>Delete</button>
-                            </form>
-                        </td>
+                        <th class="p-2 text-left">Actions</th>
                     @endif
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach($attendance as $att)
+                    <tr class="border-t hover:bg-gray-100">
+                        <td class="p-1">{{ $att->date }}</td>
+                        <td class="p-1">{{ $att->status }}</td>
+                        <td class="p-1">{{ $att->notes }}</td>
+                        @if (in_array(auth()->user()->role, ['admin', 'teacher']))
+                            <td class="p-1">
+                                <a href="{{ route('attendance.edit', $att->id) }}?redirect_to={{ url()->current() }}"
+                                class="text-gray-500 text-sm mb-3 inline-block">Edit</a>
+
+                                <form method="POST" action="{{ route('attendance.destroy', $att->id) }}"
+                                class="text-gray-500 text-sm mb-3 inline-block">
+                                    <input type="hidden" name="redirect_to" value="{{ request('redirect_to') }}">
+
+                                    @csrf
+                                    @method('DELETE')
+                                    <button> | Delete</button>
+                                </form>
+                            </td>
+                        @endif
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
     @endif
+    <a href="{{ route('students.show', $user->id) }}" class="text-gray-500 text-sm mb-3 inline-block">
+        ← Back
+    </a>
+    </div>
 </x-app-layout>
