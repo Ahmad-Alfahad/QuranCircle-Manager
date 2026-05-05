@@ -1,37 +1,63 @@
-<div class="p-4 bg-gray-800 text-white min-h-screen ">
-    <div class="p-4 text-lg font-bold">
-        Dashboard
+
+
+    <!-- 🧭 Sidebar -->
+    <div class="min-w-full min-h-full shadow-md p-4">
+
+        <h2 class="text-xl bg-green-500 text-white font-bold mb-4 p-2 rounded border-green-500">Quran System</h2>
+
+        <nav class="flex flex-col space-y-2 w-full p-2 rounded ">
+
+            <a href="{{ route('dashboard') }}"
+               class="px-3 py-2 bg-green-500 text-white rounded hover:bg-green-600 {{ request()->routeIs('dashboard') ? 'bg-gray-300 font-semibold' : '' }}">
+                Dashboard
+            </a>
+
+            @if( in_array(auth()->user()->role, ['admin', 'teacher']))
+                <a href="{{ route('students.index') }}"
+                   class="px-3 py-2 bg-green-500 text-white rounded hover:bg-green-600 {{ request()->routeIs('students.*') ? 'bg-gray-300 font-semibold' : '' }}">
+                    Students
+                </a>
+            @endif
+
+            @if( auth()->user()->role === 'admin')
+              <a href="{{ route('circles.index') }}"
+                 class="px-3 py-2 bg-green-500 text-white rounded hover:bg-green-600 {{ request()->routeIs('circles.*') ? 'bg-gray-300 font-semibold' : '' }}">
+                  Circles
+              </a>
+
+              <a href="{{ route('users.index') }}"
+                 class="px-3 py-2 bg-green-500 text-white rounded hover:bg-green-600 {{ request()->routeIs('users.*') ? 'bg-gray-300 font-semibold' : '' }}">
+                  Users
+              </a>
+            @endif
+
+            <a href="{{ route('records.index') }}"
+               class="px-3 py-2 bg-green-500 text-white rounded hover:bg-green-600 {{ request()->routeIs('records.*') ? 'bg-gray-300 font-semibold' : '' }}">
+                Records
+            </a>
+
+
+            <a href="{{ route('attendance.index') }}"
+               class="px-3 py-2 bg-green-500 text-white rounded hover:bg-green-600 {{ request()->routeIs('attendance.*') ? 'bg-gray-300 font-semibold' : '' }}">
+                Attendance
+            </a>
+
+            <a href="{{ route('profile.edit') }}"
+               class="px-3 py-2 bg-green-500 text-white rounded hover:bg-green-600 {{ request()->routeIs('profile.*') ? 'bg-gray-300 font-semibold' : '' }}">
+                Profile
+            </a>
+
+        </nav>
+
+        <div class="mt-10 border-t pt-4 text-center">
+            <p class="text-sm text-gray-600">{{ auth()->user()->name }}</p>
+
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button class="text-red-500 text-sm mt-2">Logout</button>
+            </form>
+        </div>
+
     </div>
 
-    <ul class="mt-4">
-        <li class="p-3 hover:bg-gray-700 {{ request()->routeIs('dashboard') ? 'bg-gray-700' : '' }}">
-            <a href="/dashboard">Dashboard</a>
-        </li>
-        
-        @if(in_array(auth()->user()->role, ['admin', 'teacher']))
-        <li class="p-3 hover:bg-gray-700 {{ request()->routeIs('students.index') ? 'bg-gray-700' : '' }}">
-            <a href="/students">Students</a>
-        </li>
-        <li class="p-3 hover:bg-gray-700 {{ request()->routeIs('users.index') ? 'bg-gray-700' : '' }}">
-            <a href="/users">Users</a>
-        </li>
-        @endif
 
-         <li class="p-3 hover:bg-gray-700 {{ request()->routeIs('profile.edit') ? 'bg-gray-700' : '' }}">
-            <a href="/profile/edit">Profile</a>
-
-        <li class="p-3 hover:bg-gray-700 {{ request()->routeIs('attendance.index') ? 'bg-gray-700' : '' }}">
-            <a href="/attendance">Attendance</a>
-        </li>
-
-        <li class="p-3 hover:bg-gray-700 {{ request()->routeIs('circles.index') ? 'bg-gray-700' : '' }}">
-            <a href="/circles">Circles</a>
-        </li>
-        <li class="p-3 hover:bg-gray-700 {{ request()->routeIs('records.index') ? 'bg-gray-700' : '' }}">
-            <a href="/records">Records</a>
-        </li>
-        
-
-        
-    </ul>
-</div>
