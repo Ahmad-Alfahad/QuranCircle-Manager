@@ -76,7 +76,10 @@ class RecordController extends Controller
             'surah_id' => 'required|exists:surahs,id',
             'type' => 'required|in:memorization,revision',
             'method' => 'required|in:ayah,page',
+            'from' => 'required|integer|min:1',
+            'to' => 'required|integer|min:1|gte:from',
             'recorded_at' => 'required|date',
+            'grade' => 'nullable|integer|min:1|max:100',
         ]);
         $data = $request->all();
         $data['recorded_at'] = $request->recorded_at;
@@ -98,9 +101,18 @@ class RecordController extends Controller
     {
 
         Gate::authorize('update', $record);
+        $request->validate([
+            'surah_id' => 'required|exists:surahs,id',
+            'type' => 'required|in:memorization,revision',
+            'method' => 'required|in:ayah,page',
+            'from' => 'required|integer|min:1',
+            'to' => 'required|integer|min:1|gte:from',
+            'recorded_at' => 'required|date',
+            'grade' => 'nullable|integer|min:1|max:100',
+        ]);
         $record->update($request->all());
 
-        return redirect()->to($request->redirect_to ?? route('dashboard'))
+        return redirect()->to($request->redirect_to ?? route('records.index'))
             ->with('success', 'updated');
     }
 

@@ -77,7 +77,7 @@
     <div class="mb-4">
         <label for="grade">Grade</label>
         <input type="number" name="grade" id="grade" placeholder="grade"
-            value="{{ old('grade', $record->grade ?? '') }}" class="w-full border rounded p-2" placeholder="e.g. 85">
+            value="{{ old('grade', $record->grade ?? '') }}" class="w-full border rounded p-2" placeholder="Grade">
         @error('grade')
             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
         @enderror
