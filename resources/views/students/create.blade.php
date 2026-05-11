@@ -1,19 +1,24 @@
 <x-app-layout>
-    <h2>Create Student</h2>
+    <x-slot name="header">
+        <div class="flex items-center justify-between">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                Create Student
+            </h2>
+    </x-slot>
 
+    <div class="bg-white p-6 rounded shadow max-w-xl">
     <form method="POST" action="{{ route('students.store') }}">
         @csrf
 
-        <input type="text" name="name" placeholder="Name">
-        <input type="email" name="email" placeholder="Email">
-        <input type="password" name="password" placeholder="Password">
 
-        <select name="circle_id">
-            @foreach($circles as $circle)
-                <option value="{{ $circle->id }}">{{ $circle->name }}</option>
-            @endforeach
-        </select>
-        
-        <button type="submit">Save</button>
+        @include('students._form' , ['user' => $user])
+        <button class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded m-2">
+            Create
+        </button>
     </form>
+           <a href="{{ route('students.index') }}" class="text-gray-500 text-sm mb-3 inline-block">
+        ← Back
+    </a>
+    </div>
+
 </x-app-layout>

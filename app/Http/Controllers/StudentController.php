@@ -80,9 +80,9 @@ class StudentController extends Controller
         if (!auth()->check() || auth()->user()->role !== 'admin') {
             abort(403);
         }
-
+        $user = null;
         $circles = Circle::all();
-        return view('students.create', compact('circles'));
+        return view('students.create', compact('user','circles'));
     }
 
     public function store(Request $request)
@@ -117,6 +117,7 @@ class StudentController extends Controller
 
     public function edit(User $user)
     {
+         $user->load('circleStudents');
         $circles = Circle::all();
         return view('students.edit', compact('user', 'circles'));
     }
@@ -132,6 +133,12 @@ class StudentController extends Controller
             'name' => $request->name,
             'email' => $request->email,
         ]);
+
+       $circleStudent = $user->circleStudents()->first();
+               $circleStudent->update([
+            'circle_id' => $request->circle_id,
+        ]);
+
 
         return redirect()->route('students.index')->with('success', 'Updated');
     }
