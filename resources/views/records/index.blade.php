@@ -89,7 +89,7 @@
 
                             <td class="p-2">
 
-                                {{ $record->from }} → {{ $record->to }}
+                                {{ $record->from }} → {{ $record->to }} ({{ $record->method }})
 
                             </td>
 

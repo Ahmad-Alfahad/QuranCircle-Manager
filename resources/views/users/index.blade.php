@@ -1,59 +1,61 @@
-
-
 <x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Users') }}
+        </h2>
+    </x-slot>
     @section('title', 'Users')
     @section('breadcrumbs')
-    Dashboard / Users
+        Dashboard / Users
     @endsection
     <x-slot>
-        <h2>Users</h2>
-    
-    <!-- 🔥 Filter -->
-     
-    <a href="{{ route('users.index') }}">All</a> |
-    <a href="{{ route('users.index', ['role' => 'teacher']) }}">Teachers</a> |
-    <a href="{{ route('users.index', ['role' => 'student']) }}">Students</a> |
-    <a href="{{ route('users.index', ['role' => 'admin']) }}">Admins</a>
-    <a href="{{ route('users.index', ['role' => 'user']) }}">users</a>
-    <hr>
 
-    @if($users->isEmpty())
-        <p>No users found</p>
-    @endif
+        <!-- 🔥 Filter -->
 
-    @foreach($users as $user)
-        <p>
-            {{ $user->name }} - {{ $user->email }} - <strong>{{ $user->role }}</strong>
-            <a href="{{ route('users.edit', $user->id) }}">Edit</a>
-             @if($user->role == 'user')
-        <form method="POST" action="{{ route('users.makeStudent', $user->id) }}">
-            @csrf
+        <a href="{{ route('users.index') }}">All</a> |
+        <a href="{{ route('users.index', ['role' => 'teacher']) }}">Teachers</a> |
+        <a href="{{ route('users.index', ['role' => 'student']) }}">Students</a> |
+        <a href="{{ route('users.index', ['role' => 'admin']) }}">Admins</a>
+        <a href="{{ route('users.index', ['role' => 'user']) }}">users</a>
+        <hr>
 
-            <select name="circle_id">
-                @foreach($circles as $circle)
-                    <option value="{{ $circle->id }}">
-                        {{ $circle->name }}
-                    </option>
-                @endforeach
-            </select>
+        @if($users->isEmpty())
+            <p>No users found</p>
+        @endif
 
-            <button>Make Student</button>
-        </form>
-    @endif
+        @foreach($users as $user)
+            <p>
+                {{ $user->name }} - {{ $user->email }} - <strong>{{ $user->role }}</strong>
+                <a href="{{ route('users.edit', $user->id) }}">Edit</a>
+                @if($user->role == 'user')
+                    <form method="POST" action="{{ route('users.makeStudent', $user->id) }}">
+                        @csrf
 
-        <form method="POST" action="{{ route('users.destroy', $user->id) }}">
-            @csrf
-            @method('DELETE')
-            <button>Delete</button>
-        </form>
-           
-        </p>
-    @endforeach
+                        <select name="circle_id">
+                            @foreach($circles as $circle)
+                                <option value="{{ $circle->id }}">
+                                    {{ $circle->name }}
+                                </option>
+                            @endforeach
+                        </select>
+
+                        <button>Make Student</button>
+                    </form>
+                @endif
+
+            <form method="POST" action="{{ route('users.destroy', $user->id) }}">
+                @csrf
+                @method('DELETE')
+                <button>Delete</button>
+            </form>
+
+            </p>
+        @endforeach
 
 
-@if(auth()->user()->role == 'admin')
-    <a href="{{ route('users.create') }}">Add User</a>
-@endif
-</x-slot>
+        @if(auth()->user()->role == 'admin')
+            <a href="{{ route('users.create') }}">Add User</a>
+        @endif
+    </x-slot>
 
 </x-app-layout>

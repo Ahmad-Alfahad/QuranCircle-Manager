@@ -1,9 +1,13 @@
 <x-app-layout>
+        <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Circles') }}
+        </h2>
+    </x-slot>
     @section('title', 'Circles')
     @section('breadcrumbs')
     Dashboard / Circles / {{ $circles->count() }} circles
     @endsection
-    <h2>Circles</h2>
     @if(auth()->user()->role == 'admin')
         <a href="{{ route('circles.create') }}">Add Circle</a>
     @endif
