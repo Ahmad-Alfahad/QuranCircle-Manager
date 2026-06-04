@@ -1,21 +1,20 @@
 <x-app-layout>
-    <h2>Edit Circle</h2>
-
-    <form method="POST" action="{{ route('circles.update', $circle->id) }}">
+    <x-slot name="header">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                {{ __('Edit Circle') }}
+            </h2>
+    </x-slot>
+    <form method="POST" action="{{ route('circles.update', $circle) }}">
         @csrf
         @method('PUT')
 
-        <input type="text" name="name" value="{{ $circle->name }}">
+        @include('circles._form')
 
-        <select name="teacher_id">
-            @foreach($teachers as $teacher)
-                <option value="{{ $teacher->id }}" 
-                    {{ $circle->teacher_id == $teacher->id ? 'selected' : '' }}>
-                    {{ $teacher->name }}
-                </option>
-            @endforeach
-        </select>
-
-        <button type="submit">Update</button>
+        <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">
+            Update Circle
+        </button>
     </form>
+    <a href="{{ route('circles.index') }}" class="text-gray-500 text-sm mb-3 inline-block">
+        ← Back
+    </a>
 </x-app-layout>

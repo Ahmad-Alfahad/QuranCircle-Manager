@@ -1,17 +1,19 @@
 <x-app-layout>
-    <h2>Create Circle</h2>
-
+    <x-slot name="header">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                {{ __('Create Circle') }}
+            </h2>
+    </x-slot>
     <form method="POST" action="{{ route('circles.store') }}">
         @csrf
 
-        <input type="text" name="name" placeholder="Circle Name">
+        @include('circles._form')
 
-        <select name="teacher_id">
-            @foreach($teachers as $teacher)
-                <option value="{{ $teacher->id }}">{{ $teacher->name }}</option>
-            @endforeach
-        </select>
-
-        <button type="submit">Save</button>
+        <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">
+            Create Circle
+        </button>
     </form>
+    <a href="{{ route('circles.index') }}" class="text-gray-500 text-sm mb-3 inline-block">
+        ← Back
+    </a>
 </x-app-layout>

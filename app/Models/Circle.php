@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Circle extends Model
 {
     //
-    protected $fillable  = ['name'  , 'teacher_id'] ;
+    protected $fillable  = ['name'  , 'teacher_id' , 'description' , 'start_time' , 'end_time' ] ;
     
     public function teacher()
     {
