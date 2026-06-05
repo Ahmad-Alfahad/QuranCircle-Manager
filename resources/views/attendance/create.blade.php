@@ -1,27 +1,37 @@
 <x-app-layout>
-    <h2>Create Attendance</h2>
 
-    <form method="POST" action="{{ route('attendance.store') }}">
-        @csrf
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800">
+            Create Attendance
+        </h2>
+    </x-slot>
 
-        <select name="circle_student_id">
-            @foreach($circleStudents  as $s)
-                <option value="{{ $s->id }}">
-                    {{ $s->student->name }}
-                </option>
-            @endforeach
-        </select>
+    <div class="py-6">
+        <div class="max-w-3xl mx-auto">
 
-        <input type="date" name="date">
+            <form method="POST" action="{{ route('attendance.store') }}">
+                @csrf
 
-        <select name="status">
-            <option value="present">Present</option>
-            <option value="absent">Absent</option>
-            <option value="late">Late</option>
-        </select>
+                @include('attendance._form')
 
-        <textarea name="notes" placeholder="Notes"></textarea>
+                <div class="flex justify-end gap-3 mt-6">
 
-        <button type="submit">Save</button>
-    </form>
+                    <a href="{{ route('attendance.index') }}"
+                       class="px-4 py-2 bg-gray-200 rounded-lg">
+                        Cancel
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="px-4 py-2 bg-green-600 text-white rounded-lg">
+                        Create Attendance
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
 </x-app-layout>

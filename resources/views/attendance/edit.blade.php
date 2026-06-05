@@ -1,31 +1,38 @@
 <x-app-layout>
-    <h2>Edit Attendance</h2>
 
-    <form method="POST" action="{{ route('attendance.update', $attendance->id) }}">
-        <input type="hidden" name="redirect_to" value="{{ request('redirect_to') }}">
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800">
+            Edit Attendance
+        </h2>
+    </x-slot>
 
-        @csrf
-        @method('PUT')
+    <div class="py-6">
+        <div class="max-w-3xl mx-auto">
 
-        <select name="circle_student_id">
-            @foreach($students as $s)
-                <option value="{{ $s->id }}"
-                    {{ $attendance->circle_student_id == $s->id ? 'selected' : '' }}>
-                    {{ $s->student->name }}
-                </option>
-            @endforeach
-        </select>
+            <form method="POST" action="{{ route('attendance.update', $attendance->id) }}">
+                @csrf
+                @method('PUT')
 
-        <input type="date" name="date" value="{{ $attendance->date }}">
+                @include('attendance._form')
 
-        <select name="status">
-            <option value="present" {{ $attendance->status == 'present' ? 'selected' : '' }}>Present</option>
-            <option value="absent" {{ $attendance->status == 'absent' ? 'selected' : '' }}>Absent</option>
-            <option value="excused" {{ $attendance->status == 'excused' ? 'selected' : '' }}>Excused</option>
-        </select>
+                <div class="flex justify-end gap-3 mt-6">
 
-        <textarea name="notes">{{ $attendance->notes }}</textarea>
+                    <a href="{{ route('attendance.index') }}"
+                       class="px-4 py-2 bg-gray-200 rounded-lg">
+                        Cancel
+                    </a>
 
-        <button type="submit">Update</button>
-    </form>
+                    <button
+                        type="submit"
+                        class="px-4 py-2 bg-green-600 text-white rounded-lg">
+                        Update Attendance
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
 </x-app-layout>

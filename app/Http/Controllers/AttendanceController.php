@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Gate;
 class AttendanceController extends Controller
 {
     use AuthorizesRequests;
-    //
+    
     public function index(Request $request, AttendanceService $attendanceService , ViewDataService $ViewDataService)
     {
         $user = auth()->user();
@@ -58,7 +58,7 @@ class AttendanceController extends Controller
 
     public function show(Attendance $attendance)
     {
-        // 🔐 Authorization
+        //  Authorization
         $user = auth()->user();
         Gate::authorize('view', $attendance);
         if ($user->role == 'teacher' && $attendance->circleStudent->circle->teacher_id != $user->id) {
@@ -100,8 +100,8 @@ class AttendanceController extends Controller
     public function edit(Attendance $attendance)
     {
         Gate::authorize('update', $attendance);
-        $students = CircleStudent::with('student')->get();
-        return view('attendance.edit', compact('attendance', 'students'));
+        $circleStudents = CircleStudent::with('student')->get();
+        return view('attendance.edit', compact('attendance', 'circleStudents'));
     }
 
     public function update(Request $request, Attendance $attendance)
@@ -114,7 +114,7 @@ class AttendanceController extends Controller
             'notes' => $request->notes,
         ]);
         //  dd($request->all());
-        return redirect()->to($request->redirect_to ?? route('dashboard'))
+       return redirect()->to($request->redirect_to ?? route('attendance.index'))
             ->with('success', 'updated');
     }
 
