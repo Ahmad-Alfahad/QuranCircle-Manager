@@ -1,20 +1,38 @@
 <x-app-layout>
+
     <x-slot name="header">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Edit Circle') }}
-            </h2>
+        <h2 class="font-semibold text-xl text-gray-800">
+            Edit Circle
+        </h2>
     </x-slot>
-    <form method="POST" action="{{ route('circles.update', $circle) }}">
-        @csrf
-        @method('PUT')
 
-        @include('circles._form')
+    <div class="py-6">
+        <div class="max-w-3xl mx-auto">
 
-        <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">
-            Update Circle
-        </button>
-    </form>
-    <a href="{{ route('circles.index') }}" class="text-gray-500 text-sm mb-3 inline-block">
-        ← Back
-    </a>
+            <form method="POST" action="{{ route('circles.update', $circle) }}">
+                @csrf
+                @method('PUT')
+
+                @include('circles._form')
+
+                <div class="flex justify-end gap-3 mt-6">
+
+                    <a href="{{ route('circles.index') }}"
+                       class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
+                        Cancel
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                        Update Circle
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
 </x-app-layout>

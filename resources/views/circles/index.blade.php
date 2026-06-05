@@ -1,67 +1,128 @@
 <x-app-layout>
+
     <x-slot name="header">
-        <div class="flex items-center justify-between">
+        <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Circles') }}
+                Circles
             </h2>
+
             @if(auth()->user()->role == 'admin')
-                <button><a href="{{ route('circles.create') }}"
-                        class="bg-green-500 text-white p-2 rounded hover:bg-green-600">
-                        Create Circle
-                    </a>
-                </button>
+                <a href="{{ route('circles.create') }}"
+                   class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+                     Create Circle
+                </a>
             @endif
         </div>
     </x-slot>
 
-    <div class="m-6">
-        @if ($circles->isEmpty())
-            <p>No circles found.</p>
-        @else
-            <div class="bg-white shadow rounded">
-                <table class="w-full text-sm">
-                    <thead class="bg-gray-100">
-                        <tr>
-                            <th class="p-2 text-left">Name</th>
-                            @if(auth()->user()->role == 'admin')
-                                <th class="p-2 text-left">Teacher</th>
+    <div class="py-6">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-                                <th class="p-2 text-left">Actions</th>
-                            @endif
-                            <th class="p-2 text-left">View</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($circles as $circle)
-                            <tr class="border-t hover:bg-gray-100">
-                                <td class="p-1">{{ $circle->name }}</td>
+            @if($circles->isEmpty())
+
+                <div class="bg-white rounded-lg shadow p-8 text-center text-gray-500">
+                    No circles found.
+                </div>
+
+            @else
+
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+
+                    <table class="min-w-full">
+
+                        <thead class="bg-gray-100">
+                            <tr>
+
+                                <th class="p-4 text-left">
+                                    Circle Name
+                                </th>
 
                                 @if(auth()->user()->role == 'admin')
-                                    <td class="p-1">{{ $circle->teacher->name ?? '-' }}</td>
+                                    <th class="p-4 text-left">
+                                        Teacher
+                                    </th>
+                                @endif
 
-                                    <td class="p-1">
+                                <th class="p-4 text-left">
+                                    Details
+                                </th>
 
-                                        <a href="{{ route('circles.edit', $circle->id) }}"
-                                          class="text-gray-500 text-sm mb-3 inline-block ml-2" >Edit</a>
+                                @if(auth()->user()->role == 'admin')
+                                    <th class="p-4 text-left">
+                                        Actions
+                                    </th>
+                                @endif
 
-                                        <form action="{{ route('circles.destroy', $circle->id) }}" method="POST"
-                                            style="display:inline;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit"  class="text-gray-500 text-sm mb-3 inline-block ml-2" >Delete</button>
-                                        </form>
+                            </tr>
+                        </thead>
 
+                        <tbody>
+
+                        @foreach($circles as $circle)
+
+                            <tr class="border-t hover:bg-gray-50">
+
+                                <td class="p-4 font-medium">
+                                    {{ $circle->name }}
+                                </td>
+
+                                @if(auth()->user()->role == 'admin')
+                                    <td class="p-4">
+                                        {{ $circle->teacher->name ?? '-' }}
                                     </td>
                                 @endif
-                                <td class="p-1"><a href="{{ route('circles.show', $circle->id) }}"
-                                 class="text-gray-500 text-sm mb-3 inline-block ml-2">
+
+                                <td class="p-4">
+
+                                    <a href="{{ route('circles.show', $circle) }}"
+                                       class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">
                                         View
-                                    </a></td>
+                                    </a>
+
+                                </td>
+
+                                @if(auth()->user()->role == 'admin')
+
+                                    <td class="p-4">
+
+                                        <div class="flex gap-2">
+
+                                            <a href="{{ route('circles.edit', $circle) }}"
+                                               class="px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700">
+                                                Edit
+                                            </a>
+
+                                            <form method="POST"
+                                                  action="{{ route('circles.destroy', $circle) }}">
+                                                @csrf
+                                                @method('DELETE')
+
+                                                <button
+                                                    onclick="return confirm('Delete this circle?')"
+                                                    class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700">
+                                                    Delete
+                                                </button>
+                                            </form>
+
+                                        </div>
+
+                                    </td>
+
+                                @endif
+
                             </tr>
+
                         @endforeach
-                    </tbody>
-                </table>
-            </div>
-        @endif
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            @endif
+
+        </div>
     </div>
+
 </x-app-layout>
