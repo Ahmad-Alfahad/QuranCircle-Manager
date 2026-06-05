@@ -25,7 +25,7 @@
 
 
         <div class="flex min-h-screen bg-gray-200 rounded ">
-            <div class="w-60 bg-gray-100 ">
+            <div class="w-64 bg-gray-100 shadow sticky top-0 h-screen">
                 @include('layouts.sidebar')
             </div>
 
