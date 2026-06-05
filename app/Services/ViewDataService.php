@@ -17,12 +17,12 @@ class ViewDataService {
             ];
         }
         // Teacher can see only their circles and students
-        elseif($user->role ==' teacher') {
+        elseif($user->role =='teacher') {
             return [
                 'circles' => Circle::where('teacher_id' , $user->id)
                 ->select('id', 'name')
                 ->get(),
-                'circleStudent' => CircleStudent::whereHas('circle', function($q) use ($user) {
+                'circleStudents' => CircleStudent::whereHas('circle', function($q) use ($user) {
                     $q->where('teacher_id' , $user->id);
                 })->with('student' , 'circle')->get(),
             ];

@@ -91,7 +91,11 @@ class RecordController extends Controller
     public function edit(Record $record)
     {
         Gate::authorize('update', $record);
-        $students = CircleStudent::with('student')->get();
+        $students = CircleStudent::whereHas('circle', function ($q) {
+            $q->where('teacher_id', auth()->id());
+        })
+            ->with('student', 'circle')
+            ->get();
         $surahs = Surah::all();
 
         return view('records.edit', compact('record', 'students', 'surahs'));

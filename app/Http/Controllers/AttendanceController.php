@@ -13,8 +13,8 @@ use Illuminate\Support\Facades\Gate;
 class AttendanceController extends Controller
 {
     use AuthorizesRequests;
-    
-    public function index(Request $request, AttendanceService $attendanceService , ViewDataService $ViewDataService)
+
+    public function index(Request $request, AttendanceService $attendanceService, ViewDataService $ViewDataService)
     {
         $user = auth()->user();
         Gate::authorize('viewAny', Attendance::class);
@@ -28,8 +28,8 @@ class AttendanceController extends Controller
 
         // 🎨 Filter Data
         $data = $ViewDataService->getFiltersData($user);
-            $circles = $data['circles'];
-            $circleStudents = $data['circleStudents'];
+        $circles = $data['circles'];
+        $circleStudents = $data['circleStudents'];
         return view('attendance.index', compact(
             'attendance',
             'circles',
@@ -100,7 +100,11 @@ class AttendanceController extends Controller
     public function edit(Attendance $attendance)
     {
         Gate::authorize('update', $attendance);
-        $circleStudents = CircleStudent::with('student')->get();
+        $circleStudents = CircleStudent::whereHas('circle', function ($q) {
+            $q->where('teacher_id', auth()->id());
+        })
+            ->with('student', 'circle')
+            ->get();
         return view('attendance.edit', compact('attendance', 'circleStudents'));
     }
 
@@ -114,7 +118,7 @@ class AttendanceController extends Controller
             'notes' => $request->notes,
         ]);
         //  dd($request->all());
-       return redirect()->to($request->redirect_to ?? route('attendance.index'))
+        return redirect()->to($request->redirect_to ?? route('attendance.index'))
             ->with('success', 'updated');
     }
 

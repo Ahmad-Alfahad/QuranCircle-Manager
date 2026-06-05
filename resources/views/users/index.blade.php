@@ -5,10 +5,9 @@
                 Users Management
             </h2>
 
-            ```
             @if(auth()->user()->role == 'admin')
                 <a href="{{ route('users.create') }}" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
-                    + Add User
+                     Add User
                 </a>
             @endif
         </div>
