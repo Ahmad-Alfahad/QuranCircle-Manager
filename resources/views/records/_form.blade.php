@@ -4,6 +4,37 @@
 
 <div class="bg-white shadow rounded-lg p-6 space-y-6">
 
+
+    <!-- Student -->
+    <div>
+        <label for="circle_student_id"
+            class="block text-sm font-medium text-gray-700 mb-1">
+            Student
+        </label>
+
+        <select
+            name="circle_student_id"
+            id="circle_student_id"
+            class="w-full border rounded-lg p-2"
+        >
+            <option value="">Select Student</option>
+
+            @foreach($students as $student)
+                <option
+                    value="{{ $student->id }}"
+                    {{ old('circle_student_id', $record->circle_student_id ?? '') == $student->id ? 'selected' : '' }}
+                >
+                    {{ $student->student->name }}
+                    ({{ $student->circle->name }})
+                </option>
+            @endforeach
+
+        </select>
+
+        @error('circle_student_id')
+            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+        @enderror
+    </div>
     <!-- Surah -->
     <div>
         <label for="surah_id"
