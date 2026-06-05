@@ -1,77 +1,124 @@
 <x-app-layout>
+
     <x-slot name="header">
-        <div class="flex items-center justify-between">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Students
-        </h2>
+        <div class="flex justify-between items-center">
+
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                Students
+            </h2>
+
             @if(auth()->user()->role == 'admin')
-      
-        <button><a href="{{ route('students.create') }}" class="bg-green-500 text-white p-2 rounded hover:bg-green-600">
-            Create Student
-        </a></button>
-      </div>
-    @endif
+                <a href="{{ route('students.create') }}"
+                   class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+                     Create Student
+                </a>
+            @endif
+
+        </div>
     </x-slot>
 
-    @section('title', 'Students')
-    @section('breadcrumbs')
-        Dashboard / Students / {{ $students->count() }} students
-    @endsection
+    <div class="py-6">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-<div class="m-6">
-    @if ($students->isEmpty())
-        <p>No students found.</p>
-    @else
-        <div  class="bg-white shadow rounded">
-            <table class="w-full text-sm">
-                <thead class="bg-gray-100">
-                    <tr>
-                        <th class="p-2 text-left">Name</th>
-                        <th class="p-2 text-left">Email</th>
-                        <th class="p-2 text-left">Circle</th>
-                        @if (in_array(auth()->user()->role , ['admin' , 'teacher']))
-                            <th class="p-2 text-left">Actions</th>
+            @if($students->isEmpty())
 
-                        @endif
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($students as $student)
-                        <tr class="border-t hover:bg-gray-100">
-                            <td class="p-1">{{ $student->name }}</td>
-                            <td class="p-1">{{ $student->email }}</td>
-                            <td class="p-1">{{$student->circleStudents->first()?->circle->name ?? 'N/A' }}</td>
-                            @if (in_array(auth()->user()->role , ['admin' , 'teacher']))
-                                <td class="p-1">
-                                   <div class="flex space-x-2">
-                                    <a href="{{ route('students.show', $student->id) }}"
-                                        class="text-gray-500 text-sm mb-3 inline-block ml-2">
-                                        View
-                                    </a>
+                <div class="bg-white rounded-lg shadow p-8 text-center text-gray-500">
+                    No students found.
+                </div>
 
-                                    @if(auth()->user()->role == 'admin')
-                                        <a href="{{ route('students.edit', $student->id) }}"
-                                            class="text-gray-500 text-sm mb-3 inline-block ml-2">
-                                            | Edit
+            @else
+
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+
+                    <table class="min-w-full">
+
+                        <thead class="bg-gray-100">
+                            <tr>
+
+                                <th class="p-4 text-left">
+                                    Name
+                                </th>
+
+                                <th class="p-4 text-left">
+                                    Email
+                                </th>
+
+                                <th class="p-4 text-left">
+                                    Circle
+                                </th>
+
+                                <th class="p-4 text-left">
+                                    Actions
+                                </th>
+
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                        @foreach($students as $student)
+
+                            <tr class="border-t hover:bg-gray-50">
+
+                                <td class="p-4 font-medium">
+                                    {{ $student->name }}
+                                </td>
+
+                                <td class="p-4">
+                                    {{ $student->email }}
+                                </td>
+
+                                <td class="p-4">
+                                    {{ $student->circleStudents->first()?->circle->name ?? 'N/A' }}
+                                </td>
+
+                                <td class="p-4">
+
+                                    <div class="flex gap-2 flex-wrap">
+
+                                        <a href="{{ route('students.show', $student) }}"
+                                           class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">
+                                            View
                                         </a>
 
-                                        <form method="POST" action="{{ route('students.destroy', $student->id) }}" class="inline-block">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button class="text-gray-500 text-sm mb-3 inline-block ml-2">
-                                                | Delete
-                                            </button>
-                                        </form>
-                                    @endif
-                                    </div>
-                                </td>
-                            @endif
+                                        @if(auth()->user()->role == 'admin')
 
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                                            <a href="{{ route('students.edit', $student) }}"
+                                               class="px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700">
+                                                Edit
+                                            </a>
+
+                                            <form method="POST"
+                                                  action="{{ route('students.destroy', $student) }}">
+                                                @csrf
+                                                @method('DELETE')
+
+                                                <button
+                                                    onclick="return confirm('Delete this student?')"
+                                                    class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700">
+                                                    Delete
+                                                </button>
+                                            </form>
+
+                                        @endif
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        @endforeach
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            @endif
+
         </div>
-    @endif
     </div>
+
 </x-app-layout>

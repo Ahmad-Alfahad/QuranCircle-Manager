@@ -1,66 +1,208 @@
 <x-app-layout>
+
     <x-slot name="header">
-        <div class="flex items-center justify-between">
+        <div class="flex justify-between items-center">
+
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Student Details
             </h2>
 
-            <div class="space-x-2">
-                <button><a href="{{ route('students.records', $user) }}"
-                        class="bg-green-500 text-white p-2 rounded hover:bg-green-600">
-                        View Records
-                    </a></button>
-                <button><a href="{{ route('students.attendance', $user) }}"
-                        class="bg-green-500 text-white p-2 rounded hover:bg-green-600">
-                        View Attendance
-                    </a></button>
-            </div>
-    </x-slot>
-    <div class="bg-gray-100 p-6 flex  space-x-10 rounded shadow max-w-xl m-6">
-        <div>Student Name : {{ $user->name }}</div>
-        <div> Email : {{ $user->email }}</div>
-    </div>
-    <div class="bg-gray-100 p-6 rounded shadow max-w-xl m-6">
-        <h3> Related Circles</h3>
-        @foreach($circleStudents as $cs)
-            <p> Circle Name : {{ $cs->circle->name }}</p>
-        @endforeach
-    </div>
+            <a href="{{ route('students.index') }}"
+               class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
+                ← Back
+            </a>
 
-    <div class="bg-white p-6 rounded shadow max-w-xl m-6 flex space-x-10">
-        <div class="bg-gray-100 shadow p-2">Total Records: {{ $records->count() }}</div>
-        <div class="bg-gray-100 shadow p-2">Total Attendance: {{ $attendance->count() }}</div>
-
-        @php
-            $present = $attendance->where('status', 'present')->count();
-            $total = $attendance->count();
-            $percentage = $total ? round(($present / $total) * 100) : 0;
-        @endphp
-
-        <div class="bg-gray-100 shadow p-2">Attendance Rate: {{ $percentage }}%</div>
-    </div>
-
-    @php
-        $last = $records->first();
-    @endphp
-
-    @if($last)
-        <div class="bg-white shadow p-6">
-            <div class="bg-gray-100 shadow p-2">Last Record</div>
-            <div class="p-1"> Surah : {{ $last->surah->name }}</div>
-
-            <div class="p-1">
-                Method : {{$last->method}} from ({{ $last->from }}) → to ({{ $last->to }})
-            </div>
-
-            <div class="p-1">Type : {{ $last->type }}</div>
-            <div class="p-1">Date : {{ $last->recorded_at ?? $last->date }} </div>
-            <div class="p-1">Grade : {{ $last->grade ?? 'No Grate' }} </div>
         </div>
-    @endif
+    </x-slot>
 
-    <a href="{{ route('students.index') }}" class="text-gray-500 text-sm mb-3 inline-block">
-        ← Back
-    </a>
+    <div class="py-6">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+
+            <!-- Student Information -->
+            <div class="bg-white shadow rounded-lg p-6 mb-6">
+
+                <h3 class="text-lg font-semibold mb-4">
+                    Student Information
+                </h3>
+
+                <div class="grid md:grid-cols-2 gap-4">
+
+                    <div>
+                        <span class="font-medium">Name:</span>
+                        {{ $user->name }}
+                    </div>
+
+                    <div>
+                        <span class="font-medium">Email:</span>
+                        {{ $user->email }}
+                    </div>
+
+                    <div>
+                        <span class="font-medium">Role:</span>
+                        {{ ucfirst($user->role) }}
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="bg-white shadow rounded-lg p-6 mb-6">
+
+                <h3 class="text-lg font-semibold mb-4">
+                    Quick Actions
+                </h3>
+
+                <div class="flex flex-wrap gap-3">
+
+                    <a href="{{ route('students.records', $user) }}"
+                       class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                        View Records
+                    </a>
+
+                    <a href="{{ route('students.attendance', $user) }}"
+                       class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                        View Attendance
+                    </a>
+
+                    @if(auth()->user()->role == 'admin')
+                        <a href="{{ route('students.edit', $user) }}"
+                           class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                            Edit Student
+                        </a>
+                    @endif
+
+                </div>
+
+            </div>
+
+            <!-- Related Circles -->
+            <div class="bg-white shadow rounded-lg p-6 mb-6">
+
+                <h3 class="text-lg font-semibold mb-4">
+                    Related Circles
+                </h3>
+
+                <div class="flex flex-wrap gap-2">
+
+                    @forelse($circleStudents as $cs)
+
+                        <span
+                            class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full">
+                            {{ $cs->circle->name }}
+                        </span>
+
+                    @empty
+
+                        <span class="text-gray-500">
+                            No circles assigned.
+                        </span>
+
+                    @endforelse
+
+                </div>
+
+            </div>
+
+            <!-- Statistics -->
+            @php
+                $present = $attendance->where('status', 'present')->count();
+                $total = $attendance->count();
+                $percentage = $total ? round(($present / $total) * 100) : 0;
+            @endphp
+
+            <div class="grid md:grid-cols-3 gap-4 mb-6">
+
+                <div class="bg-white shadow rounded-lg p-6 text-center">
+
+                    <div class="text-gray-500 text-sm">
+                        Total Records
+                    </div>
+
+                    <div class="text-3xl font-bold mt-2">
+                        {{ $records->count() }}
+                    </div>
+
+                </div>
+
+                <div class="bg-white shadow rounded-lg p-6 text-center">
+
+                    <div class="text-gray-500 text-sm">
+                        Total Attendance
+                    </div>
+
+                    <div class="text-3xl font-bold mt-2">
+                        {{ $attendance->count() }}
+                    </div>
+
+                </div>
+
+                <div class="bg-white shadow rounded-lg p-6 text-center">
+
+                    <div class="text-gray-500 text-sm">
+                        Attendance Rate
+                    </div>
+
+                    <div class="text-3xl font-bold mt-2">
+                        {{ $percentage }}%
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Latest Record -->
+            @php
+                $last = $records->first();
+            @endphp
+
+            @if($last)
+
+                <div class="bg-white shadow rounded-lg p-6 mb-6">
+
+                    <h3 class="text-lg font-semibold mb-4">
+                        Latest Record
+                    </h3>
+
+                    <div class="grid md:grid-cols-2 gap-4">
+
+                        <div>
+                            <span class="font-medium">Surah:</span>
+                            {{ $last->surah->name }}
+                        </div>
+
+                        <div>
+                            <span class="font-medium">Method:</span>
+                            {{ ucfirst($last->method) }}
+                        </div>
+
+                        <div>
+                            <span class="font-medium">Range:</span>
+                            {{ $last->from }} → {{ $last->to }}
+                        </div>
+
+                        <div>
+                            <span class="font-medium">Type:</span>
+                            {{ ucfirst($last->type) }}
+                        </div>
+
+                        <div>
+                            <span class="font-medium">Grade:</span>
+                            {{ $last->grade ?? '-' }}
+                        </div>
+
+                        <div>
+                            <span class="font-medium">Date:</span>
+                            {{ $last->recorded_at ?? $last->date }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+            @endif
+
+        </div>
+    </div>
 
 </x-app-layout>

@@ -18,19 +18,17 @@ class StudentController extends Controller
     {
         $user = auth()->user();
 
-        // 🟢 Admin
         if ($user->role == 'admin') {
-            $students = User::where('role', 'student')->get();
-        }
-
-        // 🟡 Teacher
-        elseif ($user->role == 'teacher') {
+            $students = User::with('circleStudents.circle')
+                ->where('role', 'student')
+                ->get();
+        } elseif ($user->role == 'teacher') {
             $students = User::whereHas('circleStudents.circle', function ($q) use ($user) {
                 $q->where('teacher_id', $user->id);
             })->get();
         }
 
-        // 🔵 Student
+       
         else {
             abort(403);
         }
@@ -41,11 +39,8 @@ class StudentController extends Controller
 
     public function show(User $user)
     {
-        // تحميل العلاقات
-        // dd($user);
-        
+
         $user->load('circleStudents.circle');
-        // إذا لم يكن مربوط بأي حلقة
         if ($user->circleStudents->isEmpty()) {
 
             return back()->with('error', 'This user is not assigned to any circle');
@@ -82,7 +77,7 @@ class StudentController extends Controller
         }
         $user = null;
         $circles = Circle::all();
-        return view('students.create', compact('user','circles'));
+        return view('students.create', compact('user', 'circles'));
     }
 
     public function store(Request $request)
@@ -117,7 +112,7 @@ class StudentController extends Controller
 
     public function edit(User $user)
     {
-         $user->load('circleStudents');
+        $user->load('circleStudents');
         $circles = Circle::all();
         return view('students.edit', compact('user', 'circles'));
     }
@@ -134,8 +129,8 @@ class StudentController extends Controller
             'email' => $request->email,
         ]);
 
-       $circleStudent = $user->circleStudents()->first();
-               $circleStudent->update([
+        $circleStudent = $user->circleStudents()->first();
+        $circleStudent->update([
             'circle_id' => $request->circle_id,
         ]);
 
@@ -149,11 +144,12 @@ class StudentController extends Controller
         return redirect()->route('students.index')->with('success', 'Deleted');
     }
 
-    public function records(User $user ) {
-        if(auth()->user()->role == 'student' && auth()->id() != $user->id) {
+    public function records(User $user)
+    {
+        if (auth()->user()->role == 'student' && auth()->id() != $user->id) {
             abort(403);
         }
-      
+
         $records = Record::whereHas('circleStudent', function ($q) use ($user) {
             $q->where('student_id', $user->id);
         })
@@ -161,24 +157,25 @@ class StudentController extends Controller
             ->latest()
             ->get();
 
-        return view('students.records', compact('records' , 'user'));
+        return view('students.records', compact('records', 'user'));
 
     }
 
-    public function attendance( User $user ) {
-        if(auth()->user()->role == 'student' && auth()->id() != $user->id) {
+    public function attendance(User $user)
+    {
+        if (auth()->user()->role == 'student' && auth()->id() != $user->id) {
             abort(403);
         }
-      
-           
-        
+
+
+
         $attendance = Attendance::whereHas('circleStudent', function ($q) use ($user) {
             $q->where('student_id', $user->id);
         })
             ->latest()
             ->get();
 
-        return view('students.attendance', compact('attendance' , 'user'));
+        return view('students.attendance', compact('attendance', 'user'));
 
     }
 }
